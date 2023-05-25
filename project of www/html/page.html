@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<title>Binary Tree</title>
+	<link rel="stylesheet" href="../css/styles1.css" type="text/css">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300" type="text/css">
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div id="wrapper">
+		<nav>
+			<ul class="top-menu">
+				<li><a href="../main.html">Главная</a></li>
+				<li><a href="page.html">Операции над бинарными деревьями</a></li>
+				<li><a href="page1.html">Виды бинарных деревьев</a></li>
+			</ul>
+		</nav>
+		<section>
+			<blockquote>
+				<h2>
+					Операции над бинарными деревьями
+				</h2>
+			</blockquote>
+			<p>Бинарные деревья поддерживают ряд операций, которые могут быть использованы для поиска, вставки, удаления и обхода элементов в дереве. Операции, которые могут быть произведены над бинарным деревом включают:</br>
+				- Вставка - вставка нового элемента в дерево.</br>
+				- Поиск - поиск элемента в дереве по его ключу.</br>
+				- Удаление - удаление элемента из дерева.</br>
+				- Обход - обход всех элементов в дереве с целью выполнения какой-либо операции.</br>
+				- Поиск наибольшего и наименьшего элементов - поиск наибольшего или наименьшего элемента в дереве.</br>
+			
+			</p>
+
+			<figure>
+				<img src="../images/often_tree.png" width="900" height="500" alt="">
+			</figure>
+			<!-- <figure>
+				<img src="images/sample.png" width="800" height="300" alt="">
+			</figure> -->
+
+			<h2>Вставка нового элемента в дерево</h2>
+				<p>Вставить новую вершину в бинарное дерево поиска довольно просто. С помощью алгоритма поиска, изложенного ранее, отыскивается вершина с одной или двумя нулевыми ссылками left или (и) right. Если ключ вставляемого элемента меньше ключа вершины с нулевой ссылкой left, то эта ссылка направляется к новой вершине, если больше, то к новой вершине направляется ссылка right, если она была нулевой. В результате вставленный элемент оказывается листом (его обе ссылки left и right являются нулевыми)</p>
+<pre><code>Node* insert(Node* root, int key) {
+	if (root == NULL) {
+		return createNode(key);
+	} else if (key < root->key) {
+		root->left = insert(root->left, key);
+	} else if (key > root->key) {
+		root->right = insert(root->right, key);
+	}
+	return root;
+}</code></pre>
+
+			<h2>Поиск элемента в дереве по его ключу</h2>
+				<p>Эта функция принимает два параметра: указатель на корень дерева и искомое значение. Если корень равен nullptr или его значение равно искомому значению, то функция возвращает указатель на корень. Иначе, если искомое значение меньше корневого значения, то функция вызывает себя рекурсивно для левого поддерева. Иначе, она вызывает себя рекурсивно для правого поддерева. Если находится узел с искомым значением, то функция вернет указатель на этот узел. Если узел не найден, функция вернет nullptr.</p>
+<pre><code>TreeNode* search(TreeNode* root, int val) {
+    if (!root || root->val == val) {
+        return root;
+    }
+    if (val < root->val) {
+        return searchBST(root->left, val);
+    }
+    return searchBST(root->right, val);
+}</code></pre>
+
+<h2>Удаление элемента из дерева</h2>
+<p>Найти узел с удаляемым элементом в дереве.
+	Если удаляемый элемент является листом, просто удалите его из дерева.
+	Если удаляемый элемент имеет только одного потомка, то замените его этим потомком.
+	Если удаляемый элемент имеет двух потомков, найдите следующий наибольший элемент в правом поддереве. Замените удаляемый элемент этим элементом, а затем удалите его из правого поддерева.</p>
+<pre><code>Node* deleteNode(Node* root, int key){
+	if (root == NULL) return root;
+	if (key < root->key) {
+		root->left = deleteNode(root->left, key);
+	}
+	else if (key > root->key) {
+		root->right = deleteNode(root->right, key);
+	}
+	else {
+		if (root->left == NULL) {
+			Node* temp = root->right;
+			delete root;
+			return temp;
+		}
+		else if (root->right == NULL) {
+			Node* temp = root->left;
+			delete root;
+			return temp;
+		}
+	Node* temp = minValueNode(root->right);
+		root->key = temp->key;
+		root->right = deleteNode(root->right, temp->key);
+	}
+	return root;
+}</code></pre>
+
+<h2>Обход всех элементов в дереве с целью выполнения какой-либо операции</h2>
+<p>В данном примере определяется структура `TreeNode` для представления узла дерева. Функция `traverse` принимает на вход указатель на корень дерева и рекурсивно обходит все его элементы, выполняя какую-либо операцию на каждом узле.</p>
+<pre><code>void traverse(TreeNode* node) {
+    if (node == NULL) {
+        return;
+    }
+    
+    // выполнение операции на текущем узле
+    // ...
+
+    traverse(node->left);
+    traverse(node->right);
+}</code></pre>
+<p>Для обхода дерева в прямом, обратном или симметричном порядке, можно изменить порядок вызова функций `traverse(node->left)` и `traverse(node->right)`. Например, для обратного обхода можно написать:</p>
+<pre><code>void traverse_back(TreeNode* node) {
+    if (node == NULL) {
+        return;
+    }
+    
+    traverse_back(node->right);
+
+    // выполнение операции на текущем узле
+    // ...
+
+    traverse_back(node->left);
+}</code></pre>
+
+<h2>Поиск наибольшего или наименьшего элемента в дереве</h2>
+<p>Поиск наибольшего элемента</br>Перейти в самый правый узел дерева, используя метод обхода в глубину.Вернуть значение ключа этого узла.</p>
+<pre><code>int findMax(Node* root) {
+	if (root == nullptr) {
+	  return INT_MIN;
+	} else if (root->right == nullptr) {
+	  return root->key;
+	} else {
+	  return findMax(root->right);
+	}
+}</code></pre>
+<p>Поиск наименьшего элемента</br>. Перейти в самый левый узел дерева, используя метод обхода в глубину.Вернуть значение ключа этого узла.</p>
+<pre><code>int findMin(Node* root) {
+	if (root == nullptr) {
+	  return INT_MAX;
+	} else if (root->left == nullptr) {
+	  return root->key;
+	} else {
+	  return findMin(root->left);
+	}
+}</code></pre>
+		</section>
+	</div>
+</body>
+</html>
